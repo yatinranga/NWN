@@ -1,16 +1,21 @@
 package com.example.NWM.view;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 public class CardRequest {
 
-	@NotEmpty
+	@NotEmpty(message = "card number can't be null")
 	private String number;
-	@NotEmpty
+	@NotEmpty(message = "expiration month can't be null")
 	private String expirationMonth;
-	@NotEmpty
+	@NotEmpty(message = "expiration year can't be null")
 	private String expirationYear;
-	@NotEmpty
+	@NotNull(message = "card cvv can't be null")
+	@Max(3)
+	@Min(3)
 	private int cvv;
 
 	public String getNumber() {
