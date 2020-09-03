@@ -5,18 +5,20 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
-import com.example.NWM.enums.CardEnum;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
+import com.example.NWM.view.CardRequest;
 
 @Entity
+@DynamicInsert
+@DynamicUpdate
 public class Card {
 
 	@Id
@@ -29,12 +31,9 @@ public class Card {
 	private String expirationMonth;
 	@NotNull(message = "expirationYear can't be null")
 	private String expirationYear;
-	@NotEmpty(message = "cvv can't be null")
+	@NotNull(message = "cvv can't be null")
 	private int cvv;
-
-	@Enumerated(EnumType.STRING)
-	@NotNull(message = "card can't be null")
-	private CardEnum card;
+	private boolean active = true;
 
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "card")
 	private Set<Payment> payment_id;
@@ -43,13 +42,20 @@ public class Card {
 
 	}
 
-	public Card(String number, String expirationMonth, String expirationYear, int cvv, CardEnum card) {
+	public Card(String number, String expirationMonth, String expirationYear, int cvv) {
 
 		this.number = number;
 		this.expirationMonth = expirationMonth;
 		this.expirationYear = expirationYear;
 		this.cvv = cvv;
-		this.card = card;
+	}
+
+	public Card(CardRequest request) {
+		this.number = request.getNumber();
+		this.expirationMonth = request.getExpirationMonth();
+		this.expirationYear = request.getExpirationYear();
+		this.cvv = request.getCvv();
+
 	}
 
 	public Long getId() {
@@ -100,12 +106,12 @@ public class Card {
 		this.cvv = cvv;
 	}
 
-	public CardEnum getCard() {
-		return card;
+	public boolean isActive() {
+		return active;
 	}
 
-	public void setCard(CardEnum card) {
-		this.card = card;
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }
